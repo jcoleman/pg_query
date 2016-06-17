@@ -48,6 +48,7 @@ class PgQuery
     statements = @tree.dup
     from_clause_items = []
     where_clause_items = []
+    cte_names = []
 
     loop do
       statement = statements.shift
@@ -66,7 +67,10 @@ class PgQuery
             # CTEs
             if statement[SELECT_STMT]['withClause']
               statement[SELECT_STMT]['withClause'][WITH_CLAUSE]['ctes'].each do |item|
-                statements << item[COMMON_TABLE_EXPR]['ctequery'] if item[COMMON_TABLE_EXPR]
+                if (cte = item[COMMON_TABLE_EXPR])
+                  statements << cte['ctequery']
+                  cte_names << cte['ctename']
+                end
               end
             end
           elsif statement[SELECT_STMT]['op'] == 1
@@ -152,6 +156,6 @@ class PgQuery
       end
     end
 
-    @tables.uniq!
+    @tables = @tables.uniq - cte_names
   end
 end

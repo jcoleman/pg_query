@@ -611,4 +611,15 @@ $BODY$
          "arg"=>{"String"=>{"str"=>"sql"}},
          "defaction"=>0}}]}}]
   end
+
+  it "does not include CTE aliases in #tables" do
+    parsed = described_class.parse(<<-SQL)
+      WITH cte_name AS (
+        SELECT 1
+      )
+      SELECT *
+      FROM real_table, cte_name
+    SQL
+    expect(parsed.tables).to eq(["real_table"])
+  end
 end
