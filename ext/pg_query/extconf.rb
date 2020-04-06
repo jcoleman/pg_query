@@ -6,6 +6,7 @@ require 'open-uri'
 LIB_PG_QUERY_TAG = '10-1.0.1'.freeze
 
 workdir = Dir.pwd
+puts "\n\nworkdir = #{workdir}\n\n\n"
 libdir = File.join(workdir, 'libpg_query-' + LIB_PG_QUERY_TAG)
 gemdir = File.join(__dir__, '../..')
 libfile = libdir + '/libpg_query.a'
